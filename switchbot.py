@@ -5,13 +5,12 @@ import hashlib
 import hmac
 import base64
 import uuid
-from dotenv import load_dotenv
 import certifi
-import os
 import pycurl
 from io import BytesIO
-
-def header_list(token, secret):
+from dotenv import load_dotenv
+import os
+def generate_header(token, secret):
     apiHeader = []
     nonce = uuid.uuid4()
     t = int(round(time.time() * 1000))
@@ -36,22 +35,37 @@ def header_list(token, secret):
     return apiHeader
 
 
-load_dotenv()
-token = os.environ['token']
-secret = os.environ['secret_key']
-mioHeader = header_list(token, secret)
-headers = ["User-Agent: Python-PycURL", "Accept: application/json"]
+
+def get_temp_hum(device_id):
+    load_dotenv()
+    token = os.environ['token']
+    secret = os.environ['secret_key']
+    header=generate_header(token,secret)
+    buffer = BytesIO()
+    c = pycurl.Curl()
+    c.setopt(c.URL, "https://api.switch-bot.com/v1.1/devices/{}/status".format(device_id))
+    c.setopt(pycurl.CAINFO, certifi.where())
+    c.setopt(c.HTTPHEADER, header)
+    c.setopt(c.WRITEDATA, buffer)
+    c.perform()
+    c.close()
+    response = eval(buffer.getvalue().decode("utf-8"))
+    if response['statusCode']==100:
+        pass
+    else:
+         Exception
 
 
-device_number=os.environ['device_number']
-buffer = BytesIO()
-c = pycurl.Curl()
-c.setopt(c.URL, "https://api.switch-bot.com/v1.1/devices/{}/status".format(device_number))
-c.setopt(pycurl.CAINFO, certifi.where())
-c.setopt(c.HTTPHEADER, mioHeader)
-c.setopt(c.WRITEDATA, buffer)
-c.perform()
-c.close()
-response = buffer.getvalue()
-print(response.decode("utf-8"))
-resp = response.decode("utf-8")
+def evaluete_response(response):
+    try:
+        status=response['statusCode']
+        if (status==100):
+            return
+        elif(status==190):
+            Exception("Device internal error due to device states not synchronized with server")
+        else:
+            Exception("Http 401 Error. User permission is denied due to invalid token.")
+    except :
+        Exception("No status code aviable")
+
+
