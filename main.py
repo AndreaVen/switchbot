@@ -6,9 +6,9 @@ import os
 load_dotenv()
 device_number=os.environ['device_number']
 sw=Switchbot()
-sw.get_devices()
-devices=sw.device_list
-sw.get_temp_hum(device_number)
+temp,hum=sw.get_temp_hum(device_number)
+sw.query_all_sensors()
+data=sw.sensor_dict
 
 
 

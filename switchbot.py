@@ -129,6 +129,7 @@ class Switchbot:
         for device in self.device_list:
             try:
                 response=self.query_sensor(device['deviceId'])
+                response['body']['deviceName']=device['deviceName']
                 self.sensor_dict[response['body']['deviceId']]=response
             except :
                 Exception
