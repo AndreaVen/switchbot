@@ -21,10 +21,27 @@ class switchbot_test(unittest.TestCase):
 
 
 
-    @patch('switchbot.Switchbot.get_temp_hum')
-    def test_temperature_hum_wrong_type(self,temp_hum):
-        temp_hum.response['statusCode'] = 100
-        self.assertTrue(self.sw.get_temp_hum('42'),True)
+    # @patch('switchbot.Switchbot.get_temp_hum')
+    # def test_temperature_hum_wrong_type(self,temp_hum):
+    #     temp_hum.response['statusCode'] = 100
+    #     body={'humidity':12,'temperature':20}
+    #     temp_hum.response['body'] = body
+    #     temp,hum=self.sw.get_temp_hum('42')
+    #     self.assertEqual(temp,20)
+    #     self.assertEqual(hum,12)
+
+
+    def test_temperature_hum_wrong_response(self):
+        response={'statusCode':"190"}
+        self.assertFalse(self.sw.evaluate_response(response))
+        response = {'statusCode': "191"}
+        self.assertFalse(self.sw.evaluate_response(response))
+        with  self.assertRaises(TypeError):
+            self.sw.evaluate_response("42")
+
+
+
+
 
     def test_temperature_hum(self):
         import os

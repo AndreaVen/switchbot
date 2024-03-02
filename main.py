@@ -1,14 +1,18 @@
-import switchbot
+import time
 from switchbot import Switchbot
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-device_number=os.environ['device_number']
+from data_writer import Data_writer
 sw=Switchbot()
-temp,hum=sw.get_temp_hum(device_number)
-sw.query_all_sensors()
-data=sw.sensor_dict
+writer = Data_writer()
+i=0;
+while True:
+    sw.query_all_sensors()
+    data=sw.sensor_dict
+    writer.save_all(data)
+    i=i+1
+    time.sleep(120)
+
+
+
 
 
 

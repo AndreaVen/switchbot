@@ -88,7 +88,7 @@ class Switchbot:
             return temp,hum
 
         else:
-             Exception
+            raise Exception
 
     def query_sensor(self,device_id):
         header = self.generate_header(self.token, self.secret)
@@ -113,9 +113,10 @@ class Switchbot:
             if (status==100):
                 return True
             elif(status==190):
-                Exception("Device internal error due to device states not synchronized with server")
+                return False
             else:
-                Exception("Http 401 Error. User permission is denied due to invalid token.")
+                return False
+
 
         except :
             raise TypeError
