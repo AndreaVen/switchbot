@@ -29,10 +29,12 @@ class Data_writer:
     for key in sensor_dict:
       record=sensor_dict[key]
       id=record['body']['deviceId']
-      humidity = record['body']['humidity']
-      temperature = record['body']['temperature']
-      name = record['body']['deviceName']
-      self.write_data(temperature,humidity,name,id)
+      type=record['body']['deviceType']
+      if (type=='WoIOSensor'):
+        humidity = record['body']['humidity']
+        temperature = record['body']['temperature']
+        name = record['body']['deviceName']
+        self.write_data(temperature,humidity,name,id)
     return True
 
 
