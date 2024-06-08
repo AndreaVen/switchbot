@@ -10,15 +10,15 @@ class Data_writer:
 
 
 
-  def write_data(self,temperature,humidity,name,id):
+  def write_data(self,temperature,humidity,id):
     if (id==None or id==''):
       raise Exception
     else:
-      sql = "INSERT INTO sensor_data (humidity, temperature,timestamp,timestamp_id,id,name,date) VALUES (%s, %s,%s, %s,%s, %s,%s)"
+      sql = "INSERT INTO switchbot.sensor_values (temperature,humidity,sensor_id,timestamp) VALUES (%s, %s,%s,%s)"
       # current date and time
       now = datetime.now()
       timestamp_id = str(now) + '-' + id
-      val = (humidity,temperature,now,timestamp_id,id,name,now)
+      val = (temperature,humidity,id,now)
       self.mycursor.execute(sql, val)
       self.mydb.commit()
       print( "record inserted.")
@@ -33,8 +33,7 @@ class Data_writer:
       if (type=='WoIOSensor'):
         humidity = record['body']['humidity']
         temperature = record['body']['temperature']
-        name = record['body']['deviceName']
-        self.write_data(temperature,humidity,name,id)
+        self.write_data(temperature,humidity,id)
     return True
 
 
